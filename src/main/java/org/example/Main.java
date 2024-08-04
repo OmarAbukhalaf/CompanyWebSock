@@ -16,6 +16,7 @@ public class Main {
     public static void main(String[] args) throws IOException, URISyntaxException {
         String serverURL = "http://tickerchart.com/m/server-apis/companies-with-tags/list/marketId/5";
         List<String> tickers = extractTickers(serverURL);
+        System.out.println("");
         URI link= new URI("wss://eu-adx.live.tickerchart.net/streamhubws/");
         CompanyWebSocketClient client = new CompanyWebSocketClient(link, tickers);
         client.connect();
