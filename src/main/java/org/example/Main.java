@@ -19,8 +19,7 @@ public class Main {
         System.out.println("");
         URI link= new URI("wss://eu-adx.live.tickerchart.net/streamhubws/");
         CompanyWebSocketClient client = new CompanyWebSocketClient(link, tickers);
-        client.clearFiles();
-        //client.connect();
+        client.connect();
     }
 
     private static List<String> extractTickers(String serverURL) throws IOException {

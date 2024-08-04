@@ -50,16 +50,7 @@ class CompanyWebSocketClient extends WebSocketClient {
     public void onError(Exception ex) {
         ex.printStackTrace();
     }
-    public void clearFiles() {
-        for (String ticker : tickers) {
-            try {
-                Files.write(Paths.get(ticker + ".txt"), new byte[0]); // Clear the file by writing an empty byte array
-                System.out.println("Cleared file for ticker: " + ticker);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+
 
     private void writeToFile(String ticker, String message) {
         try (FileWriter writer = new FileWriter(ticker + ".txt",true)) {
