@@ -15,35 +15,37 @@ public class Main {
 
     public static void main(String[] args) throws IOException, URISyntaxException {
         String serverURL = "http://tickerchart.com/m/server-apis/companies-with-tags/list/marketId/5";
-        List<String> tickers = extractTickers(serverURL);
-        System.out.println("");
+        String companiesList = extractResponse(serverURL);
+        List <String> tickers=extractTickers(companiesList);
         URI link= new URI("wss://eu-adx.live.tickerchart.net/streamhubws/");
         CompanyWebSocketClient client = new CompanyWebSocketClient(link, tickers);
         client.connect();
     }
 
-    private static List<String> extractTickers(String serverURL) throws IOException {
-        List<String> tickers = new ArrayList<>();
+    private static String extractResponse(String serverURL) throws IOException {
         URL url = new URL(serverURL);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         BufferedReader input = new BufferedReader(new InputStreamReader(conn.getInputStream()));
         String line;
         StringBuilder response = new StringBuilder();
-        while((line=input.readLine())!=null){
+        while ((line = input.readLine()) != null) {
             response.append(line);
         }
         input.close();
         conn.disconnect();
-        String companiesList=response.toString();
+        return response.toString();
+    }
+    private static List <String> extractTickers (String companiesList){
+        List<String> tickers = new ArrayList<>();
         JSONArray resp = new JSONArray(companiesList);
         for (int i=0;i<resp.length();i++) {
             JSONObject comp = resp.getJSONObject(i);
             tickers.add(comp.getString("TICKER"));
         }
-
-        return tickers;
+    return tickers;
     }
 }
+
 
 
 
