@@ -10,18 +10,16 @@ import java.util.Map;
 
 class CompanyWebSocketClient extends WebSocketClient {
     private List<String> tickers;
-    private Map<String,List<Integer>> volumeMap;
-    private WritetoFile writetofile;
+    private Map<String,Company> company;
     private MessageProcessor messageProcessor;
 
     public CompanyWebSocketClient(URI link, List<String> tickers) {
         super(link);
         this.tickers = tickers;
-        this.volumeMap=new HashMap<>();
-        this.writetofile=new WritetoFile();
-        this.messageProcessor=new MessageProcessor(volumeMap,writetofile);
+        this.company=new HashMap<>();
+        this.messageProcessor=new MessageProcessor(company);
         for(String ticker:tickers) {
-            volumeMap.put(ticker, new ArrayList<>());
+            company.put(ticker, new Company(ticker));
         }
     }
 
@@ -37,7 +35,6 @@ class CompanyWebSocketClient extends WebSocketClient {
     @Override
     public void onMessage(String message) {
         String ticker=messageProcessor.getTicker(message);
-        WritetoFile.writefile(ticker,message);
         messageProcessor.processMessage(message,ticker);
     }
 

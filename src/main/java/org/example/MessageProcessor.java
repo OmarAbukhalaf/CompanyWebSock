@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.Map;
 
 public class MessageProcessor {
-    private Map<String, List<Integer>> volumeMap;
+    private Map<String, Company> companiesmap;
     private WritetoFile writetofile;
 
-    public MessageProcessor(Map<String, List<Integer>> volumeMap, WritetoFile writetoFile){
-        this.volumeMap=volumeMap;
-        this.writetofile=writetoFile;
+
+    public MessageProcessor(Map<String, Company> companiesmap ){
+        this.companiesmap = companiesmap;
     }
 
     public void processMessage(String message, String ticker) {
@@ -19,13 +19,12 @@ public class MessageProcessor {
         if (m.has("volume") && !m.getString("volume").equals("#")) {
             volume = m.getInt("volume");
         }
-        List<Integer> volumes=volumeMap.get(ticker);
-        volumes.add(volume);
-        if (volumes.size() == 5) {
-            double average=getAverage(volumes);
-            String averageMessage="Average of the last 5 messages is:" + average;
-            WritetoFile.writefile(ticker,averageMessage);
-            volumes.clear();
+        Company company=companiesmap.get(ticker);
+        company.addVolume(volume);
+        if(company.getSize()==5) {
+            double avg = company.getAvg();
+            String outmsg = "The average volume for" + ticker+ " is: " + avg;
+            LiveData.broadcastMessage(outmsg);
         }
     }
 
