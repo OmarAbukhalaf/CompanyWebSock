@@ -1,6 +1,8 @@
 package org.example;
 
 import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -9,12 +11,14 @@ public class MessageProcessor {
     private WritetoFile writetofile;
 
 
+
     public MessageProcessor(Map<String, Company> companiesmap ){
         this.companiesmap = companiesmap;
     }
 
-    public void processMessage(String message, String ticker) {
+    public void processMessage(String message, String ticker) throws IOException {
         JSONObject m = new JSONObject(message);
+        //LiveData.sendMessage(message);
         int volume = 0;
         if (m.has("volume") && !m.getString("volume").equals("#")) {
             volume = m.getInt("volume");
@@ -23,17 +27,11 @@ public class MessageProcessor {
         company.addVolume(volume);
         if(company.getSize()==5) {
             double avg = company.getAvg();
-            String outmsg = "The average volume for" + ticker+ " is: " + avg;
-            LiveData.broadcastMessage(outmsg);
+            String outmsg = "The average volume for " + ticker+ " is: " + avg;
+            LiveData.sendMessage(outmsg);
         }
     }
 
-    private double getAverage(List<Integer> volumes){
-        int sum=0;
-        for(int v:volumes)
-            sum+=v;
-        return sum/5.0;
-    }
 
     public String getTicker(String message){
         JSONObject j = new JSONObject(message);

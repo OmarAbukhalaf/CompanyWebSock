@@ -1,47 +1,60 @@
 package org.example;
 
+import org.eclipse.jetty.websocket.api.Session;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
+import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.websocket.OnClose;
-import javax.websocket.OnError;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
 
-public class LiveData {
+@WebSocket
+public  class LiveData {
+    public static List<Session> sessions = new ArrayList<>();
 
-    private static List<Session> sessions = new ArrayList<>();
-
-    @OnOpen
-    public void onOpen(Session session) {
-        System.out.println("WebSocket connection opened: ");
+    @OnWebSocketConnect
+    public void onConnect(Session session) {
+        System.out.println("WebSocket connected " );
         sessions.add(session);
+       sendMessage("Connected to Jetty server");
     }
 
-    @OnMessage
+    @OnWebSocketMessage
     public void onMessage(Session session, String message) {
-        System.out.println("WebSocket message received: " + message);
-        broadcastMessage("Connected to Jetty server ");
+        System.out.println("Received message:" + message);
+        sendMessage(message);
+    }
+    public static void outputmsg(String message){
+        sendMessage(message);
+    }
+    public static Session getSession(){
+        return sessions.getFirst();
     }
 
-    @OnClose
-    public void onClose(Session session) {
-        System.out.println("WebSocket connection closed: ");
+    @OnWebSocketClose
+    public void onClose(Session session, int statusCode, String reason) {
+        System.out.println("WebSocket closed");
         sessions.remove(session);
     }
 
-    @OnError
+    @OnWebSocketError
     public void onError(Session session, Throwable throwable) {
-        System.out.println("WebSocket error");
+        System.out.println("WebSocket error" );
     }
 
-    public static void broadcastMessage(String message) {
+    public static synchronized void sendMessage(String message) {
+        System.out.println("Sent" + sessions.size() +": "+message);
         for (Session session : sessions) {
             try {
-                session.getBasicRemote().sendText(message);
-            } catch (Exception e) {
-                System.out.println("Error broadcasting message");
+                session.getRemote().sendString(message);
+            } catch (IOException e) {
+                System.out.println("Error: "+ e);
             }
+
         }
     }
+
 }

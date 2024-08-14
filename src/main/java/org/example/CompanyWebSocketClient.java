@@ -1,8 +1,9 @@
 package org.example;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
+
+import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,12 @@ class CompanyWebSocketClient extends WebSocketClient {
     @Override
     public void onMessage(String message) {
         String ticker=messageProcessor.getTicker(message);
-        messageProcessor.processMessage(message,ticker);
+        //LiveData.sendMessage(message);
+        try {
+            messageProcessor.processMessage(message,ticker);
+        } catch (IOException e) {
+            System.out.println("Error: "+ e);
+        }
     }
 
     @Override
