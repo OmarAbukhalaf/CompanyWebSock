@@ -29,7 +29,6 @@
             <scope>test</scope>
         </dependency>
 
-
         <dependency>
             <groupId>org.java-websocket</groupId>
             <artifactId>Java-WebSocket</artifactId>
@@ -41,7 +40,6 @@
             <artifactId>json</artifactId>
             <version>20240303</version>
         </dependency>
-
 
         <dependency>
             <groupId>org.eclipse.jetty.websocket</groupId>
@@ -60,7 +58,6 @@
             <artifactId>websocket-server</artifactId>
             <version>9.4.55.v20240627</version>
         </dependency>
-
     </dependencies>
 
 

@@ -14,7 +14,7 @@ class CompanyWebSocketClient extends WebSocketClient {
     private Map<String,Company> company;
     private MessageProcessor messageProcessor;
 
-    public CompanyWebSocketClient(URI link, List<String> tickers) {
+    public CompanyWebSocketClient(URI link, List<String> tickers)  {
         super(link);
         this.tickers = tickers;
         this.company=new HashMap<>();
@@ -36,7 +36,6 @@ class CompanyWebSocketClient extends WebSocketClient {
     @Override
     public void onMessage(String message) {
         String ticker=messageProcessor.getTicker(message);
-        //LiveData.sendMessage(message);
         try {
             messageProcessor.processMessage(message,ticker);
         } catch (IOException e) {

@@ -1,4 +1,7 @@
 package org.example;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.websocket.server.WebSocketHandler;
+import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.IOException;
@@ -13,15 +16,49 @@ import java.util.List;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException, URISyntaxException {
+    public static void main(String[] args) throws Exception {
         String serverURL = "http://tickerchart.com/m/server-apis/companies-with-tags/list/marketId/5";
         String companiesList = extractResponse(serverURL);
-        List <String> tickers=extractTickers(companiesList);
-        URI link= new URI("wss://eu-adx.live.tickerchart.net/streamhubws/");
-        CompanyWebSocketClient client = new CompanyWebSocketClient(link, tickers);
-        client.connect();
-    }
+        List<String> tickers = extractTickers(companiesList);
+        Thread serverThread = new Thread(() -> {
+            Server server = new Server(8000);
+            WebSocketHandler handler = new WebSocketHandler() {
+                public void configure(WebSocketServletFactory factory) {
+                    factory.register(LiveData.class);
+                }
+            };
 
+            server.setHandler(handler);
+            try {
+                server.start();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("Server Started");
+            try {
+                server.join();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        Thread clientThread = new Thread(() -> {
+            URI link;
+            try {
+                link = new URI("wss://eu-adx.live.tickerchart.net/streamhubws/");
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            }
+            CompanyWebSocketClient client = new CompanyWebSocketClient(link, tickers);
+            client.connect();
+        });
+        serverThread.start();
+        clientThread.start();
+
+        serverThread.join();
+        clientThread.join();
+
+
+    }
     private static String extractResponse(String serverURL) throws IOException {
         URL url = new URL(serverURL);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();

@@ -13,6 +13,7 @@ public class Company{
     public String getTicker(){
         return ticker;
     }
+
     public void addVolume(int volume) {
         volumes.add(volume);
     }
