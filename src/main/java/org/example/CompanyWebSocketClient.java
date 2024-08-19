@@ -7,6 +7,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import static org.example.FindTicker.getTickerJSON;
 
 
 class CompanyWebSocketClient extends WebSocketClient {
@@ -35,7 +36,7 @@ class CompanyWebSocketClient extends WebSocketClient {
 
     @Override
     public void onMessage(String message) {
-        String ticker=messageProcessor.getTicker(message);
+        String ticker=getTickerJSON(message);
         try {
             messageProcessor.processMessage(message,ticker);
         } catch (IOException e) {

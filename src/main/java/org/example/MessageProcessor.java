@@ -3,6 +3,10 @@ package org.example;
 import org.json.JSONObject;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
+
+import static org.example.LiveData.Valid;
+import static org.example.LiveData.subscribe;
 
 
 public class MessageProcessor {
@@ -14,26 +18,30 @@ public class MessageProcessor {
 
     public void processMessage(String message, String ticker) throws IOException {
         JSONObject m = new JSONObject(message);
+        System.out.println("Logging: " + message);
         int volume = 0;
         if (m.has("volume") && !m.getString("volume").equals("#")) {
             volume = m.getInt("volume");
         }
         Company company=companiesmap.get(ticker);
         company.addVolume(volume);
-        if(company.getSize()==5) {
+        if(company.getSize()==1) {
             double avg = company.getAvg();
             String outmsg = "The average volume for " + ticker+ " is: " + avg;
-            LiveData.sendMessage(outmsg);
+            outputmsg(outmsg,ticker);
+            company.clearVolume();
+        }
+    }
+
+    public void outputmsg(String message, String ticker){
+        System.out.println("Subscribe= " + subscribe);
+        System.out.println("Ticker= " + ticker);
+        if(Objects.equals(ticker, subscribe) && Valid){
+            System.out.println("outmsg= " + message);
+            LiveData.sendMessage(message);
         }
     }
 
 
-    public String getTicker(String message){
-        JSONObject j = new JSONObject(message);
-        String topic= j.getString("topic");
-        String []parts= topic.split("\\.");
-        String ticker=parts[1];
-        return ticker;
 
-    }
 }

@@ -20,45 +20,40 @@ public class Main {
         String serverURL = "http://tickerchart.com/m/server-apis/companies-with-tags/list/marketId/5";
         String companiesList = extractResponse(serverURL);
         List<String> tickers = extractTickers(companiesList);
-        Thread serverThread = new Thread(() -> {
-            Server server = new Server(8000);
-            WebSocketHandler handler = new WebSocketHandler() {
-                public void configure(WebSocketServletFactory factory) {
-                    factory.register(LiveData.class);
-                }
-            };
 
-            server.setHandler(handler);
-            try {
-                server.start();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+        Server server = new Server(8000);
+        WebSocketHandler handler = new WebSocketHandler() {
+            public void configure(WebSocketServletFactory factory) {
+                factory.register(LiveData.class);
             }
-            System.out.println("Server Started");
-            try {
-                server.join();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        Thread clientThread = new Thread(() -> {
-            URI link;
-            try {
-                link = new URI("wss://eu-adx.live.tickerchart.net/streamhubws/");
-            } catch (URISyntaxException e) {
-                throw new RuntimeException(e);
-            }
-            CompanyWebSocketClient client = new CompanyWebSocketClient(link, tickers);
-            client.connect();
-        });
-        serverThread.start();
-        clientThread.start();
+        };
 
-        serverThread.join();
-        clientThread.join();
+        server.setHandler(handler);
+        try {
+            server.start();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("Server Started");
 
 
+        URI link;
+        try {
+            link = new URI("wss://eu-adx.live.tickerchart.net/streamhubws/");
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+        CompanyWebSocketClient client = new CompanyWebSocketClient(link, tickers);
+        client.connect();
+
+        try {
+            server.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
+
+
     private static String extractResponse(String serverURL) throws IOException {
         URL url = new URL(serverURL);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -82,7 +77,6 @@ public class Main {
     return tickers;
     }
 }
-
 
 
 

@@ -4,6 +4,7 @@ import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
 import java.net.URI;
+import java.util.Scanner;
 
 public class JettyClient extends WebSocketClient {
     public JettyClient(URI link){
@@ -13,12 +14,14 @@ public class JettyClient extends WebSocketClient {
     @Override
     public void onOpen(ServerHandshake handshakedata) {
         System.out.println("Connected");
+        send("uid=154678925");
+        send("subscribe=QO.ADCB.ADX");
+        userSend();
     }
 
     @Override
     public void onMessage(String message) {
         System.out.println(message);
-
     }
 
     @Override
@@ -29,6 +32,16 @@ public class JettyClient extends WebSocketClient {
     @Override
     public void onError(Exception ex) {
         ex.printStackTrace();
+    }
+
+    public void userSend(){
+        while(true) {
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Enter a message to send: ");
+            String comp = scanner.nextLine();
+            send(comp);
+            comp="";
+        }
     }
 
     public static void main(String[] args) throws Exception {

@@ -11,12 +11,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.example.FindTicker.getTicker;
+import static org.example.FindTicker.validateUID;
 
 
 @WebSocket
 public  class LiveData {
     private static List<Session> sessions = new ArrayList<>();
-
+    public static String subscribe;
+    public static boolean Valid;
 
     @OnWebSocketConnect
     public synchronized void onConnect(Session session) {
@@ -28,6 +31,11 @@ public  class LiveData {
     @OnWebSocketMessage
     public synchronized void onMessage(Session session, String message) {
         System.out.println("Received message:" + message);
+        if(message.startsWith("uid="))
+            Valid=validateUID(message);
+
+        if(message.startsWith("subscribe"))
+            subscribe=getTicker(message);
     }
 
 

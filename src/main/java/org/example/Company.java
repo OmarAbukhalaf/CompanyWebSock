@@ -18,6 +18,10 @@ public class Company{
         volumes.add(volume);
     }
 
+    public void clearVolume(){
+        volumes.clear();
+    }
+
     public double getAvg(){
         int sum=0;
         for(int v:volumes){
