@@ -25,7 +25,7 @@ public class MessageProcessor {
         }
         Company company=companiesmap.get(ticker);
         company.addVolume(volume);
-        if(company.getSize()==1) {
+        if(company.getSize()==5) {
             double avg = company.getAvg();
             String outmsg = "The average volume for " + ticker+ " is: " + avg;
             outputmsg(outmsg,ticker);

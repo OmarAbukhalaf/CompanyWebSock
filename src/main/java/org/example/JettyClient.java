@@ -15,8 +15,7 @@ public class JettyClient extends WebSocketClient {
     public void onOpen(ServerHandshake handshakedata) {
         System.out.println("Connected");
         send("uid=154678925");
-        send("subscribe=QO.ADCB.ADX");
-        userSend();
+        send("subscribe=QO.FADGI.ADX");
     }
 
     @Override
@@ -34,15 +33,6 @@ public class JettyClient extends WebSocketClient {
         ex.printStackTrace();
     }
 
-    public void userSend(){
-        while(true) {
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("Enter a message to send: ");
-            String comp = scanner.nextLine();
-            send(comp);
-            comp="";
-        }
-    }
 
     public static void main(String[] args) throws Exception {
     URI ServerURI= URI.create("ws://localhost:8000");
