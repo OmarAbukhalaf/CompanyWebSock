@@ -3,9 +3,7 @@ package org.example;
 import org.json.JSONObject;
 import java.io.IOException;
 import java.util.Map;
-import java.util.Objects;
 
-import static org.example.LiveData.Valid;
 import static org.example.LiveData.subscribe;
 
 
@@ -25,23 +23,23 @@ public class MessageProcessor {
         }
         Company company=companiesmap.get(ticker);
         company.addVolume(volume);
-        if(company.getSize()==5) {
+        if(company.getSize()==1) {
             double avg = company.getAvg();
             String outmsg = "The average volume for " + ticker+ " is: " + avg;
-            outputmsg(outmsg,ticker);
+            //outputmsg(outmsg,ticker);
+            System.out.println("Subscribe= " + subscribe);
+            System.out.println("Ticker= " + ticker);
+            System.out.println("outmsg= " + message);
+            LiveData.sendMessage(ticker,message);
             company.clearVolume();
+
         }
     }
 
     public void outputmsg(String message, String ticker){
         System.out.println("Subscribe= " + subscribe);
         System.out.println("Ticker= " + ticker);
-        if(Objects.equals(ticker, subscribe) && Valid){
             System.out.println("outmsg= " + message);
-            LiveData.sendMessage(message);
+            LiveData.sendMessage(ticker,message);
         }
-    }
-
-
-
 }

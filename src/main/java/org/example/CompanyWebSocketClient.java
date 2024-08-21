@@ -53,6 +53,5 @@ class CompanyWebSocketClient extends WebSocketClient {
     public void onError(Exception ex) {
         ex.printStackTrace();
     }
-
 }
 
