@@ -26,7 +26,6 @@ public class MessageProcessor {
         if(company.getSize()==1) {
             double avg = company.getAvg();
             String outmsg = "The average volume for " + ticker+ " is: " + avg;
-            //outputmsg(outmsg,ticker);
             System.out.println("Subscribe= " + subscribe);
             System.out.println("Ticker= " + ticker);
             System.out.println("outmsg= " + message);
@@ -36,10 +35,5 @@ public class MessageProcessor {
         }
     }
 
-    public void outputmsg(String message, String ticker){
-        System.out.println("Subscribe= " + subscribe);
-        System.out.println("Ticker= " + ticker);
-            System.out.println("outmsg= " + message);
-            LiveData.sendMessage(ticker,message);
-        }
+
 }
