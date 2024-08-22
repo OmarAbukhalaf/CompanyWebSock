@@ -54,12 +54,14 @@ public  class LiveData {
         //System.out.println("Sent " + sessions.size() + ": " + message);
         List<Session> clients = getSessions(ticker);
         for (Session session : clients) {
+            if (Valid.get(session) == "true") {
                 try {
                     session.getRemote().sendString(message);
                 } catch (IOException e) {
                     System.out.println("Error: " + e);
                 }
 
+            }
         }
     }
 }
