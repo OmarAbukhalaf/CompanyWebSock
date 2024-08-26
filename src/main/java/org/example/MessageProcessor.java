@@ -29,7 +29,7 @@ public class MessageProcessor {
             System.out.println("Subscribe= " + subscribe);
             System.out.println("Ticker= " + ticker);
             System.out.println("outmsg= " + message);
-            LiveData.sendMessage(ticker,outmsg);
+            LiveData.sendMessage(ticker, outmsg);
             company.clearVolume();
 
         }

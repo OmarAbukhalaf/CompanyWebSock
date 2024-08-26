@@ -17,32 +17,33 @@ import static org.example.FindTicker.*;
 public  class LiveData {
 
     public static String subscribe;
-    public static Map<Session,String> Valid= new HashMap<>();
-    public static Map<Session,String> subsMap= new HashMap<>();
+    public static Map<Session,Connection> connectionMap= new HashMap<>();
 
     @OnWebSocketConnect
     public synchronized void onConnect(Session session) {
         System.out.println("WebSocket connected " );
-
+        Connection connection=new Connection(session,"");
+        connectionMap.put(session,connection);
     }
 
     @OnWebSocketMessage
     public synchronized void onMessage(Session session, String message) {
         System.out.println("Received message:" + message);
-        if(message.startsWith("uid="))
-           if(validateUID(message))
-            Valid.put(session,"true");
-
+        Connection connection=connectionMap.get(session);
+        if(message.startsWith("uid=")) {
+            String uid = message.substring(4);
+            connection.setUid(uid);
+        }
         if(message.startsWith("subscribe")) {
             subscribe = getTicker(message);
-            subsMap.put(session, subscribe);
+            connection.setSubscribe(subscribe);
         }
     }
 
     @OnWebSocketClose
     public void onClose(Session session, int statusCode, String reason) {
         System.out.println("WebSocket closed");
-        subsMap.remove(session);
+        connectionMap.remove(session);
     }
 
     @OnWebSocketError
@@ -51,16 +52,14 @@ public  class LiveData {
     }
 
     public static synchronized void sendMessage(String ticker,String message) {
-        //System.out.println("Sent " + sessions.size() + ": " + message);
-        List<Session> clients = getSessions(ticker);
-        for (Session session : clients) {
-            if (Valid.get(session) == "true") {
+        System.out.println("Sent : " + message);
+        for (Connection connection : connectionMap.values()) {
+            if(ticker.equals(connection.getCompSubscribe()) && Connection.validateUID(connection.getUid())){
                 try {
-                    session.getRemote().sendString(message);
+                    connection.getSession().getRemote().sendString(message);
                 } catch (IOException e) {
-                    System.out.println("Error: " + e);
+                    System.out.println("Error sending message: " + e.getMessage());
                 }
-
             }
         }
     }
