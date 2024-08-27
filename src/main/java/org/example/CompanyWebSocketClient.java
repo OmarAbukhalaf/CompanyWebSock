@@ -1,14 +1,12 @@
 package org.example;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
-
 import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import static org.example.FindTicker.getTickerJSON;
-
 
 class CompanyWebSocketClient extends WebSocketClient {
     private List<String> tickers;

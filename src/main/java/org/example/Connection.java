@@ -1,12 +1,14 @@
 package org.example;
 
 import org.eclipse.jetty.websocket.api.Session;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 public class Connection {
     private Session session;
     private String uid;
-    private String compSubscribe;
-
+    private Set<String> compSubscribe=new HashSet<>();
 
     public Connection(Session session,String uid){
         this.session=session;
@@ -17,15 +19,12 @@ public class Connection {
         this.uid=uid;
     }
 
-    public void setSubscribe(String subscribe){
-        this.compSubscribe=subscribe;
+    public void addSubscribe(String subscribe){
+        compSubscribe.add(subscribe);
     }
 
     public String getUid(){
         return uid;
-    }
-    public String getCompSubscribe(){
-        return compSubscribe;
     }
 
     public static boolean validateUID(String userId){
@@ -38,11 +37,20 @@ public class Connection {
 
     private static boolean isNumber(String num){
         if(num.isEmpty()) return false;
-
         for(char n: num.toCharArray()){
             if(!Character.isDigit(n))
                 return false;
         }
         return true;
     }
+
+    public boolean searchTicker(String ticker){
+        for(String c:compSubscribe){
+            if(Objects.equals(ticker, c)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
+

@@ -10,9 +10,6 @@ public class Company{
         this.ticker=ticker;
         this.volumes=new ArrayList<>();
     }
-    public String getTicker(){
-        return ticker;
-    }
 
     public void addVolume(int volume) {
         volumes.add(volume);

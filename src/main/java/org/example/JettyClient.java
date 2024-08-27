@@ -2,7 +2,6 @@ package org.example;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
-
 import java.net.URI;
 import java.util.Scanner;
 
@@ -33,11 +32,23 @@ public class JettyClient extends WebSocketClient {
         ex.printStackTrace();
     }
 
+    public void sendToServer(String input){
+        send(input);
+    }
+
 
     public static void main(String[] args) throws Exception {
-    URI ServerURI= URI.create("ws://localhost:8000");
-    JettyClient Client= new JettyClient(ServerURI);
-    Client.connect();
+        URI ServerURI= URI.create("ws://localhost:8000");
+        JettyClient Client= new JettyClient(ServerURI);
+        Client.connect();
+
+        Scanner scanner=new Scanner(System.in);
+        System.out.println("Enter message to send to the Server:");
+        while (true){
+            String input=scanner.nextLine();
+            Client.sendToServer(input);
+        }
+
     }
 }
 

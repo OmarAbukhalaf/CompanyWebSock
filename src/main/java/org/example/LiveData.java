@@ -6,10 +6,8 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
-
 import java.io.IOException;
 import java.util.*;
-
 import static org.example.FindTicker.*;
 
 
@@ -36,7 +34,7 @@ public  class LiveData {
         }
         if(message.startsWith("subscribe")) {
             subscribe = getTicker(message);
-            connection.setSubscribe(subscribe);
+            connection.addSubscribe(subscribe);
         }
     }
 
@@ -54,7 +52,7 @@ public  class LiveData {
     public static synchronized void sendMessage(String ticker,String message) {
         System.out.println("Sent : " + message);
         for (Connection connection : connectionMap.values()) {
-            if(ticker.equals(connection.getCompSubscribe()) && Connection.validateUID(connection.getUid())){
+            if(connection.searchTicker(ticker) && Connection.validateUID(connection.getUid())){
                 try {
                     connection.getSession().getRemote().sendString(message);
                 } catch (IOException e) {
