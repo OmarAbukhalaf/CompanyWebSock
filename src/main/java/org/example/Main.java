@@ -17,7 +17,7 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        String serverURL = "http://tickerchart.com/m/server-apis/companies-with-tags/list/marketId/5";
+        String serverURL = "";
         String companiesList = extractResponse(serverURL);
         List<String> tickers = extractTickers(companiesList);
 
