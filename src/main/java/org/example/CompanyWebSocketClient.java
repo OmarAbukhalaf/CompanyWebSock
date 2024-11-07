@@ -26,7 +26,7 @@ class CompanyWebSocketClient extends WebSocketClient {
     @Override
     public void onOpen(ServerHandshake handshakedata) {
         System.out.println("Connected");
-        send("uid=124667865");
+        send("uid=");
         for(String ticker:tickers) {
             send("subscribe=QO." + ticker + ".ADX");
         }
